@@ -20,7 +20,7 @@
 	* ``` pip install keras==1.2.2 ```
 
 * You have to tell Theano to use the GPU instead of the CPU. Therefore, you have to create a .theanorc file in your home directory. It should at least contain the following flags:
-	* ``` [global] 
+	``` [global] 
 	floatX = float32 
 	device = gpu
 
