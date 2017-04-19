@@ -15,3 +15,15 @@
 * If you are on Windows and have errors regarding loading some dll files when using Theano, then I would suggest the following approach to install Theano again (even on linux or mac, this seems a good approach to follow):
 	* ``` conda install mingw libpython ``` (on mac or linux, you can probably skip mingw)
 	* ``` conda install theano pygpu ``` (by installing pygpu, you also get the new libgpuarray package which seems to replace the cuda backend in the future)
+
+* After that you can install Keras by using pip (as long as the pip version is linked to your anaconda python installation)
+	* ``` pip install keras==1.2.2 ```
+
+* You have to tell Theano to use the GPU instead of the CPU. Therefore, you have to create a .theanorc file in your home directory. It should at least contain the following flags:
+	* ``` [global] 
+	floatX = float32 
+	device = gpu
+
+	[lib]
+	cnmem = 0.6 
+	```
