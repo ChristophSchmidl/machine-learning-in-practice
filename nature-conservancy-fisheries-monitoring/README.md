@@ -27,3 +27,13 @@
 	[lib]
 	cnmem = 0.6 
 	```
+* CNMem is is a memory manager for CUDA designed to help Deep Learning frameworks manage memory. I made the experience that it can boost your timinings by some seconds. The flag determines how much percent of your gpu’s memory you want to make available to theano. In this case, we are giving Theano 60% of our gpu memory. You can even give it 100% percent but this is only possible if your gpu is only meant for dnn tasks and is not powering your display. If your gpu is also powering your display/monitor then you have to experiment with the percentages. 
+
+* By installing Keras you also should have a folder named .keras in your homefolder. In the .keras folder sits a keras.json file which you have to alter and specify which backend you want to use. If you want to use theano then it should look like this:
+	``` {
+    "floatx": "float32",
+    "epsilon": 1e-07,
+    "image_dim_ordering": "th",
+    "backend": "theano"
+	}
+	```
