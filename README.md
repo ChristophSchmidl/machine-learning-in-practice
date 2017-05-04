@@ -9,4 +9,6 @@ This repository contains the code for the course "Machine Learning in Practice" 
 see: https://www.kaggle.com/c/the-nature-conservancy-fisheries-monitoring
 
 
-## Competition 2 - ?
+## Competition 2 - Quora Question Pairs
+
+see: https://www.kaggle.com/c/quora-question-pairs
