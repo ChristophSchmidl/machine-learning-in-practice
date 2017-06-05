@@ -1,0 +1,126 @@
+\documentclass[a4paper]{article}
+
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{amssymb}
+\usepackage{dsfont}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage[hyphens]{url}
+\usepackage{titling}
+\usepackage{varwidth}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+
+
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={165mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
+
+\title{Machine Learning in Practice\\ \vspace{1em}Team Report - Classifying Nemo\\Quora Question Pairs Competition\vspace{1em}}
+\author{
+  Christoph Schmidl\\ s4226887\\      \texttt{c.schmidl@student.ru.nl}
+  \and
+  Denis Pogosov\\ s4750276\\     \texttt{denis.b.pogosov@gmail.com}
+  \and
+  Emma Valtersson\\	E711929\\	\texttt{emma.valtersson@mpi.nl}
+  \and
+  Lars Kuijpers\\ s4356314\\ 		\texttt{ljt.kuijpers@student.ru.nl}
+  \and
+  Lisa Boonstra\\ s3018547\\		\texttt{l.boonstra@student.ru.nl}
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+
+\section{Problem description}
+
+The Kaggle competition named "Quora Question Pairs" \url{https://www.kaggle.com/c/quora-question-pairs} confronts the competitor with the problem of comparing two questions with each other and deciding if these two questions are duplicates or not. The main problem of this task is due to the semantics of the questions. Although a question can be formulated with different words and phrases than another question, the semantic and therefore the meaning of these questions could be the same. The recognition of duplicate questions is therefore not a trivial task to perform.\\
+
+\subsection{Data}
+ 
+Like most Kaggle competitions the provided data is split into two files. The training data and the test data.\\
+The \textbf{training data} is available as a csv file (train.csv, 404290 rows, 6 columns) and contains the following data fields:
+
+\begin{itemize}
+	\item \textbf{id} - the id of a training set question pair
+	\item \textbf{qid1, qid2} - unique ids of each question (only available in train.csv)
+	\item \textbf{question1, question2} - the full text of each question
+	\item \textbf{is\_duplicate} - the target variable, set to 1 if question1 and question2 have essentially the same meaning, and 0 otherwise. 
+\end{itemize}
+
+\noindent The \textbf{test data} is also available as a csv file (test.csv, 2345796 rows, 3 columns) but only contains three fields, namely:
+
+\begin{itemize}
+	\item \textbf{test\_id} - the id of a test set question pair
+	\item \textbf{question1, question2} - the full text of each question
+\end{itemize}
+
+\section{Approach}
+
+
+\subsection{Data Exploration}
+
+
+
+
+\subsection{Feature Engineering}
+
+
+
+
+\subsection{Model Selection}
+
+
+
+\section{Results}
+
+
+
+
+\section{Discussion}
+
+
+
+
+\section{References}
+
+
+\section*{Appendix}
+
+
+\subsection*{Individual Contributions}
+
+
+\textbf{Christoph}\\
+
+
+
+
+\textbf{Denis}\\
+
+
+
+\textbf{Emma}\\
+
+
+
+\textbf{Lars}\\
+
+
+
+\textbf{Lisa}\\
+
+
+
+\end{document}
