@@ -39,10 +39,10 @@ sys.setdefaultencoding('utf-8')
 ########################################
 ## set directories and parameters
 ########################################
-BASE_DIR = '../input/'
-EMBEDDING_FILE = BASE_DIR + 'glove.840B.300d.txt'
-TRAIN_DATA_FILE = BASE_DIR + 'train.csv'
-TEST_DATA_FILE = BASE_DIR + 'test.csv'
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+EMBEDDING_FILE = BASE_DIR + '/glove.840B.300d.txt'
+TRAIN_DATA_FILE = BASE_DIR + '/input/train.csv'
+TEST_DATA_FILE = BASE_DIR + '/input/test.csv'
 MAX_SEQUENCE_LENGTH = 30
 MAX_NB_WORDS = 200000
 EMBEDDING_DIM = 300
