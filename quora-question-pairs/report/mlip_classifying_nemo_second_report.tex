@@ -43,53 +43,39 @@
 \maketitle
 
 
-\section{Problem description}
+\section{Introduction}
 
-The Kaggle competition named "Quora Question Pairs" \url{https://www.kaggle.com/c/quora-question-pairs} confronts the competitor with the problem of comparing two questions with each other and deciding if these two questions are duplicates or not. The main problem of this task is due to the semantics of the questions. Although a question can be formulated with different words and phrases than another question, the semantic and therefore the meaning of these questions could be the same. The recognition of duplicate questions is therefore not a trivial task to perform.\\
 
-\subsection{Data}
+For the second competition, our team focused on classifying question pairs in the Quora competition from Kaggle (see: \url{https://www.kaggle.com/c/quora-question-pairs}). Our motivation for choosing this competition was that this competition had a completely different problem domain than the first competition which made it possible for us to get acquainted with new techniques needed in order to solve this problem. The task was to determine whether a pair of questions were duplicates of each other or not. These judgments were provided by human labellers for the training data. The main challenge to identify duplicates concerns assessing the semantic similarity, rather than the actual words used. For instance, some question pairs are very similar in words used while being non-duplicates (\textit{Who were the Aztec?/Who were the Aztec Gods?} and \textit{What is the best travel website?/What is the best travel website in Spain?}). Another problem is the use of different words or synonyms although the questions essentially mean the same thing (\textit{Is time travel possible? If yes? How?/Is time travel still theorized as being possible?}). Moreover, some individual questions occurred in several pairs, which further supports the use of linguistic features in the model rather than the raw text input.
+
+
+\section{Data set}
  
-Like most Kaggle competitions the provided data is split into two files. The training data and the test data.\\
-The \textbf{training data} is available as a csv file (train.csv, 404290 rows, 6 columns) and contains the following data fields:
-
-\begin{itemize}
-	\item \textbf{id} - the id of a training set question pair
-	\item \textbf{qid1, qid2} - unique ids of each question (only available in train.csv)
-	\item \textbf{question1, question2} - the full text of each question
-	\item \textbf{is\_duplicate} - the target variable, set to 1 if question1 and question2 have essentially the same meaning, and 0 otherwise. 
-\end{itemize}
-
-\noindent The \textbf{test data} is also available as a csv file (test.csv, 2345796 rows, 3 columns) but only contains three fields, namely:
-
-\begin{itemize}
-	\item \textbf{test\_id} - the id of a test set question pair
-	\item \textbf{question1, question2} - the full text of each question
-\end{itemize}
+The data set in this competition provided 404 289 pairs in the training set judged by human labellers. As a disclaimer, Kaggle mentioned that the labels may be subject to human error, and therefore not completely trustworthy. The test set, however, was bigger with 2.345.803 question pairs. We started by exploring the data set and found missing questions in both the training (n=2) and the test set (n=6). To examine the semantic similarity of the two questions, we calculated a set of linguistic features that have been frequently cited in previous literature. First, we examined the Cosine similarity, a feature that is often used in document clustering, which estimates the similarity across the documents represented as vectors by calculating their correlation (Huang, 2008). Second, we calculated the Word Mover’s Distance (Kusner et al., 2015), which tries to calculate the semantic similarity across two sentences. It uses the Google News Corpus (see: \url{https://code.google.com/archive/p/word2vec/}) and calculates the distance travelled from one sentence (with stopwords removed) to another in word2vec space (see the distribution in Figure Y in the Appendix). This feature makes it possible to circumvent any difficulties related to synonyms since these are placed close to each other in meaning space. Examples of other linguistic features, that do not necessarily assess semantic information, included n-grams and tf-idf (term frequency-inverse document frequency).
 
 \section{Approach}
 
+Throughout this competition, we tried several approaches in order to identify duplicates of questions. Our first approach was rather naive by comparing bags of letters across the two questions, based on a kernel from Kaggle. We extracted these features related to the bag of letters using the sklearn package. Using a logistic regression, this approach provided us with a good baseline to which we could compare future results.
+ 
+As a second step, we examined possible approaches to the problem by looking into discussion on the Kaggle forum. Most of these approaches seemed to revolve around XGBoost and LSTM. First, we focused on XGBoost seemed to perform slightly better at the time. Our first trial with this model type was a simple implementation using only a single feature (the original training set without any engineered features). Since this model performed rather badly (PUT NUMBER HERE), we moved on to include more features, and ended up with a final feature set of approximately 30 features. The feature importance is illustrated in Figure Y in the Appendix.
+ 
+Another approach that we looked into was the LSTM (Long Short-Term Memory network). This type of model processes sentences in a sequential manner, similar to language processing, by interpreting later words in the sentence in relation to the previous words. Our final LSTM used 3 features only: frequency of words for both sentences and the intersection of words between sentences. This approach used the Glove model (https://nlp.stanford.edu/projects/glove/) which outperformed an earlier LSTM using the google word to vec model.
 
-\subsection{Data Exploration}
-
-
-
-
-\subsection{Feature Engineering}
-
-
-
-
-\subsection{Model Selection}
 
 
 
 \section{Results}
 
-
+In this section, we present the results from several different models that we have tried. Our baseline approach, using a logistic regression with the bag of letters yielded a log loss score of 0.39018. The second model, XGBoost model and only the raw text from the questions, slightly improved our score (0.34325). The final XGBoost model further improved our score, with a score of 0.16879. The LSTM approach did unfortunately not improve our score (0.18655).
 
 
 \section{Discussion}
 
+Based on the Kaggle leaderboard, we noticed that most of the teams in the top had very similar score. It appears that the best performing models used XGBoost, LSTM, or the combination of the two. Differences in performance appear to come mostly from finding the right features, rather than the model used. A lot of these features  were based on so-called ‘magic features’ or features that were extracted due to data leakage.
+ 
+Another notable thing we noticed was the relatively high number of question related to India (see Figure Y in Appendix). Ten percent of the total questions in the training data set had questions containing ‘India’ and five percent of the questions in the test set. Although it does not seem to matter in performance for this competition, as India is mentioned a lot in both the training and test set, the high number of mentions might make it such that classifiers might not be generalizable to other data sets.
+ 
+Overall, we think the competition had some problems, but we enjoyed working on a different kind of problem and learned a lot from it. Especially about linguistic features and machine learning approaches using these features.
 
 
 
@@ -99,28 +85,172 @@ The \textbf{training data} is available as a csv file (train.csv, 404290 rows, 6
 \section*{Appendix}
 
 
+\subsection*{Figures}
+
+
+
 \subsection*{Individual Contributions}
 
 
-\textbf{Christoph}\\
+\subsubsection*{Christoph}
+
+\textbf{First competition:}
+
+\begin{itemize}
+	\item Worked with the SurfSara cluster and tried different, small models to get acquainted with the whole SurfSara ecosystem. The SurfSara cluster helped a lot as soon as you were sure that the whole model pipeline worked. It was rather difficult to use it for mere prototyping use cases. For the purpose of prototyping I had to configure my desktop pc at home.
+	\item Configured Desktop PC at home for dual booting Windows 10 with Ubuntu 16.04 because a virtual environment was not suited for GPU operations. The whole configuration process for Ubuntu 16.04 with Keras and Thenao as its backend has been written down in another document. Different problems and their fixes regarding memory issues on a linux environment has been written down as well.
+	\item Worked through tutorials for Keras and incorporated different models found on the Kaggle forum. Keras seemed a good choice to generate the first submissions with ease. Keras was also used by most of the users in this competition, therefore it was possible to find many ideas on the forum and later on tweak them to one’s own need.
+	\item One specific tutorial for Keras was tailored towards image classification and was used for later optimization (\url{https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html})
+	\item Worked on a neural network, making use of transfer learning, using a pretrained VGG-16 network with batch normalization using Keras and Theano. Gained good results (place 280 on the public leaderboard).
+	\item Worked through the whole Fast.Ai course regarding CNNs (\url{http://course.fast.ai/index.html}) and incorporated ideas like pseudo labeling which can be used for the next competition.
+	\item Did the 5-minute flash-talk presentation
+	\item Github repository: \url{https://github.com/ChristophSchmidl/machine-learning-in-practice}
+	
+\end{itemize}
+
+\noindent\textbf{Second competition:}
+
+\begin{itemize}
+	\item Peer reviewed the final presentations.
+	\item Helped writing the final report.
+\end{itemize}
 
 
+\subsubsection*{Denis}
+
+\textbf{First competition:}
+
+\begin{itemize}
+	\item Looked for an approach to solve the Fisheries monitoring competition. I found and learned the approaches of region proposal convolutional network, such as variations of R-CNN (generic, Fast and Faster R-CNN), as well as Yolo v2. Moreover, I looked for approaches, which were not demanding to computational resources, such as Enet. I decided to work with Yolo v2, because of reported (by authors) high accuracy and speed. Moreover, it does two stage detection: finds an object on image and classify it.
+	\item Prepared my desktop PC for Yolo installation: installed MS Visual Studio 2015, CUDA, OpenCV, Tensorflow and Darknet frameworks. Unfortunately CNNs need a good GPU, which I do not  have. CPU detection was very slow, and estimated training time of Yolo, based on non-augmented dataset was 2+ months.
+	\item Worked with SURFsara cluster to train Yolo. Arranged installation of Darknet framework on the cluster and run training pipeline. After two epochs I noticed very good improvement of classification from less than 5\% to approx. 40\% accuracy. Using SURFsara for a lot of experiments with deep neural networks is expensive and exceeds the given budget of 2000 sbus.
+	\item To arrange confunction with Kaggle, made two scripts in matlab: first converts json files (annotations) to Yolo format; second converts Darkflow output json files to csv for Kaggle and incorporates fine tuning of likelihoods.
+	\item Asked our coach (Twan van Laarhoven) to give us access to a university GPU server ‘Speedy’ (not limited by any budget). Worked with Speedy server to train Yolo. There was no direct access, so I made several scripts to transfer command and files via intermediary server ‘lilo’. Arranged installation of Darknet framework on the server and run training pipeline.
+	\item Tried different ways to train Yolo and prevent overfitting. Arranged about 50 hours and at least 10 pipelines of training with different parameters. Came to conclusion that the given training set was essentially insufficient. 
+	\item Tried and checked efficiency of different ways to fine tune likelihoods:
+	\begin{itemize}
+		\item Clipping (limit likelihoods by a number, e.g. 0.95) 
+		\item Gain (multiply all the likelihoods by a number, e.g 1.2)
+		\item Use the rule for non-mutually exclusive events (to improve likelihoods for several objects)
+	\end{itemize}
+	\item There was a class where no fish detected (NoF) that is managed by likelihood threshold. However, some images were hard to be classified even by a human expert, so I had to use some approaches for that class:
+	\begin{itemize}
+		\item give a number for NoF class (e.g 0.5) and use uniform distribution for the rest
+		\item use real distribution of classes among a test set. This minimize entropy and should give lower error.
+	\end{itemize}
+	\item Created a script in Matlab that estimated the accuracy from the error given by Kaggle. The best accuracy was 70\%. Hence, asked team members to find and annotate extra images.
+	\item Prepared extra images for testing. Created scripts in Matlab that augmented images (given and extra) by horizontal flipping, 90 degree rotation counterclockwise, cropping out corners, shifting, white noise addition. Scaling was incorporated in Darknet framework.
+	\item Arranged about 40 hours and about 5 pipelines of training with different parameters on augmented data. 
+	\item Found a very good early stopping point and set of parameters for fine likelihoods tuning. The error was 0.51 and it gave us 10th place on the public leaderboard. The Yolo was checked for overfitting with a validation set. 
+	\item According to Kaggle rules, before we could see the second stage test set, I prepared and uploaded the two models (only two were allowed) and the whole dataset for submission to Kaggle.
+	\item Arranged testing the second stage dataset and submitted predictions. According to the rules we were not allowed to change anything from the previously submitted models.
+	\item The second stage error was 2.06 that was higher than the error at the first stage. I see two major reasons: 1) insufficient amount of (augmented) training images, 2) tightly tuned likelihoods (e.g. change gain from 1.2 to 0.75 gives the error amount of 1.68).
+	\item Due to the fact that Yolo worked well on the first stage test set and it worked not so efficient on the second stage test set I decided to check 3 following ideas.
+	\item Continue training of Yolo and check the accuracy of the selected early stopping point. I arranged also 20 hours of training and noticed that the error is slightly lower after all. Hence, the early stopping point was not perfect. However, it was not possible to see it on the validation set I had had and another performance parameters I had checked.
+	\item Pseudo-labelling of the second stage dataset. I created a matlab script for that and arranged training. This technique is very sensitive to parameters. I did not program it properly (needed extra 40 hours), as a consequence it did not bring much benefits. Note that it was not allowed to use the second stage set for training.
+	\item Augmented the test set and picked up the most likely prediction among the augmented copies of an image (greedy algorithm). I created two matlab scripts for that and arranged testing on 3 models. Surprisingly, it improved error much and error was 1.59 that could be the best result (among the course peers). Note that the second stage images were not used for training (e.g. by pseudo-labelling).
+	\item Created the presentation (would be presented on 03th May of 2017).
+	\item Created a Github repository with guidances and all the relevant files to training, testing and  supplementary operations (https://github.com/dpogosov/yolo\_kfm)
+	
+\end{itemize}
+
+	
+\noindent\textbf{Second competition:} (very limited participation as was decided with Elena):\\
+
+Main task was to learn recurrent neural nets for prediction time-dependent sequences.
+
+\begin{itemize}
+	\item Attended team meetings and coach meetings.
+	\item Continued investigation of YOLO:
+	\begin{itemize}
+		\item Learned Recurrent YOLO from the paper [\url{https://arxiv.org/abs/1607.05781v1}]. Recurrent connections allow to predict the future state and make the predictions stable in dynamic settings (e.g. avoid occlusions).
+		\item Learned Keras framework (Tensorflow backend).
+		\item Got working YOLO in Keras from this repo [\url{github.com/allanzelener/YAD2K/}]
+	\end{itemize}
+	\item Learned LSTM network for captioning from paper [\url{arxiv.org/pdf/1411.4389v3.pdf}]
+	\item Learned LSTM networks for prediction time-dependent sequences:
+	\begin{itemize}
+		\item Adopted the approach from paper [\url{ieeexplore.ieee.org/document/7780479/}]. Implemented one layer of 128 LSTM units (length of sequence was 10) in Tensorflow.
+		\item Implemented a simple environment that simulates motion an object around a circle with a constant speed.
+		\item Trained LSTM to predict the future state of the moving object. After 400 epochs the network was able to predict the state for 1~3 steps forward. 
+	\end{itemize}
+\end{itemize}
 
 
-\textbf{Denis}\\
+\subsubsection*{Emma}
+
+\textbf{First competition:}
+
+\begin{itemize}
+	\item Tried implementing different neural networks (using different tutorials \url{https://chsasank.github.io/keras-tutorial.html} and \url{https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html}
+). Struggled with getting this to run on my CPU due to wrong versions of different Python libraries. Tried to implement this on SurfSara cluster.
+	\item Collected images from external data sources.
+	\item Annotated external images with bounding boxes.
+	\item Helped with the preparation of the first 5-minute presentation.
+	\item Helped writing the final report.
+\end{itemize}
 
 
+\noindent\textbf{Second competition:}
 
-\textbf{Emma}\\
+\begin{itemize}
+	\item Did exploratory work on the data set.
+	\item Found linguistic features in the literature, and implemented these.
+	\item Got more experience in remotely running script on external servers. Tried running an SVM with linguistic features on SurfSara and a CPU cluster at my research institute. 
+	\item Looked into XGBoost implementations.
+	\item Helped preparing the presentations.
+	\item Presented the final presentation.
+	\item Helped writing the final report.
+\end{itemize}
 
 
+\subsubsection*{Lars}
 
-\textbf{Lars}\\
+\textbf{First competition:}
+
+\begin{itemize}
+	\item Did exploratory work on data and approaches from other people.
+	\item Created sample submission using model from the discussions.
+	\item Tried implementing neural networks using Tensorflow. Struggled with running it because of many issues with required libraries.
+	\item Helped writing the final report for the first competition.
+\end{itemize}
 
 
+\noindent\textbf{Second competition:}
 
-\textbf{Lisa}\\
+\begin{itemize}
+	\item Did exploratory work on approaches from other people in the Kaggle discussions.
+	\item Worked on baseline model.
+	\item Helped looking into linguistic features.
+	\item Helped making the presentations and presented the flash talk.
+	\item Helped write the final report for the second competition.
+\end{itemize}
 
+
+\subsubsection*{Lisa}
+
+\textbf{First competition:}
+
+\begin{itemize}
+	\item Did Tutorials regarding Tensorflow
+	\item Tried to get Emma’s network to work. Ultimately couldn’t because of unovercomable incompatibilities with the python libraries.
+	\item Tried to work on the SurfSara cluster.
+	\item Annotated external images with bounding boxes.
+	\item Helped with the preparation of the first 5-minute presentation.
+	\item Helped writing the final report.
+\end{itemize}
+
+\noindent\textbf{Second competition:}
+
+\begin{itemize}
+	\item Did exploratory work on approaches from other people on the Kaggle site.
+	\item Worked on the presentations and gave the final presentation
+	\item Looked into linguistic features
+	\item Learned about XGBoost
+	\item Looked into the LSTM
+	\item Worked on getting LSTM to run on surfsara and then worked with Christoph on this
+	\item Helped writing the final report.
+\end{itemize}
 
 
 \end{document}
